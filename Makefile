@@ -21,7 +21,7 @@ DCLINEFILES = $(addsuffix /dcline.csv, $(basename $(notdir $(DATAFILES))))
 
 OCTAVE_EVAL = octave-cli --no-gui --eval
 
-all: $(READMES) $(CASEFILES) $(BUSFILES) $(GENFILES) $(BRANCHFILES) $(COSTFILES)
+all: $(READMES) $(CASEFILES) $(BUSFILES) $(GENFILES) $(BRANCHFILES) $(COSTFILES) $(DCLINEFILES)
 
 %/README: $(DATADIR)/%.m
 	@mkdir -p $(dir $@)
