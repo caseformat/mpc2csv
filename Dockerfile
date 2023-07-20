@@ -25,6 +25,7 @@ COPY bus2csv.m /workspace/mfiles/bus2csv.m
 COPY gen2csv.m /workspace/mfiles/gen2csv.m
 COPY branch2csv.m /workspace/mfiles/branch2csv.m
 COPY gencost2csv.m /workspace/mfiles/gencost2csv.m
+COPY dcline2csv.m /workspace/mfiles/dcline2csv.m
 
 RUN mkdir -p /workspace/casecsv
 COPY Makefile /workspace/casecsv/Makefile

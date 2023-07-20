@@ -7,7 +7,7 @@ DELIM = ,
 
 CASES = case4gs case5 case6ww case9 case14 case24_ieee_rts case_ieee30 case30 case39 case118 case145 case300 \
 case_RTS_GMLC case_ACTIVSg500 case_ACTIVSg2000
-#case_ACTIVSg10k case_ACTIVSg25k case_ACTIVSg70k
+# case_ACTIVSg10k case_ACTIVSg25k case_ACTIVSg70k case_SyntheticUSA
 DATAFILES = $(addprefix $(DATADIR)/, $(addsuffix .m, $(CASES)))
 #DATAFILES = $(wildcard $(DATADIR)/case*)
 
@@ -17,6 +17,7 @@ BUSFILES = $(addsuffix /bus.csv, $(basename $(notdir $(DATAFILES))))
 GENFILES = $(addsuffix /gen.csv, $(basename $(notdir $(DATAFILES))))
 BRANCHFILES = $(addsuffix /branch.csv, $(basename $(notdir $(DATAFILES))))
 COSTFILES = $(addsuffix /gencost.csv, $(basename $(notdir $(DATAFILES))))
+DCLINEFILES = $(addsuffix /dcline.csv, $(basename $(notdir $(DATAFILES))))
 
 OCTAVE_EVAL = octave-cli --no-gui --eval
 
@@ -28,6 +29,7 @@ all: $(READMES) $(CASEFILES) $(BUSFILES) $(GENFILES) $(BRANCHFILES) $(COSTFILES)
 	grep ^% | \
 	sed -e 's/^%//g' | \
 	sed -e 's/^\s\s\s//g' | \
+	sed -e 's/^CASE.*  //g' | \
 	sed -e '/^Please see CASEFORMAT for details on the case file format/d' \
 	> $@;
 
@@ -50,6 +52,10 @@ all: $(READMES) $(CASEFILES) $(BUSFILES) $(GENFILES) $(BRANCHFILES) $(COSTFILES)
 %/gencost.csv: $(DATADIR)/%.m
 	@mkdir -p $(dir $@)
 	$(OCTAVE_EVAL) "gencost2csv($(basename $(notdir $<)), '$@', '$(DELIM)')";
+
+%/dcline.csv: $(DATADIR)/%.m
+	@mkdir -p $(dir $@)
+	$(OCTAVE_EVAL) "dcline2csv($(basename $(notdir $<)), '$@', '$(DELIM)')";
 
 
 casecsv.zip:
