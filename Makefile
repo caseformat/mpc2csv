@@ -5,9 +5,13 @@ TAG = casecsv/mpc2csv
 DATADIR = ../matpower/data
 DELIM = ,
 
-CASES = case4gs case5 case6ww case9 case14 case24_ieee_rts case_ieee30 case30 case39 case118 case145 case300 \
+PFCASES = case4gs
+OPFCASES = case5 case6ww case9 case14 case24_ieee_rts case_ieee30 case30 case39 case118 case145 case300 \
 case_RTS_GMLC case_ACTIVSg500 case_ACTIVSg2000
-# case_ACTIVSg10k case_ACTIVSg25k case_ACTIVSg70k case_SyntheticUSA
+# ALTCASES = case9Q case9target case30Q case30pwl
+# BIGCASES = case_ACTIVSg10k case_ACTIVSg25k case_ACTIVSg70k case_SyntheticUSA
+CASES = $(PFCASES) $(OPFCASES) $(ALTCASES) $(BIGCASES)
+
 DATAFILES = $(addprefix $(DATADIR)/, $(addsuffix .m, $(CASES)))
 #DATAFILES = $(wildcard $(DATADIR)/case*)
 
@@ -20,6 +24,9 @@ COSTFILES = $(addsuffix /gencost.csv, $(basename $(notdir $(DATAFILES))))
 DCLINEFILES = $(addsuffix /dcline.csv, $(basename $(notdir $(DATAFILES))))
 
 OCTAVE_EVAL = octave-cli --no-gui --eval
+
+PREPROC =
+# PREPROC = mpc = runopf(mpc, mpoption('verbose', 0, 'out.all', 0));
 
 all: $(READMES) $(CASEFILES) $(BUSFILES) $(GENFILES) $(BRANCHFILES) $(COSTFILES) $(DCLINEFILES)
 
@@ -35,27 +42,27 @@ all: $(READMES) $(CASEFILES) $(BUSFILES) $(GENFILES) $(BRANCHFILES) $(COSTFILES)
 
 %/case.csv: $(DATADIR)/%.m
 	@mkdir -p $(dir $@)
-	$(OCTAVE_EVAL) "case2csv($(basename $(notdir $<)), '$@', '$(basename $(notdir $<))', '$(DELIM)')";
+	$(OCTAVE_EVAL) "mpc = $(basename $(notdir $<)); $(PREPROC) case2csv(mpc, '$@', '$(basename $(notdir $<))', '$(DELIM)')";
 
 %/bus.csv: $(DATADIR)/%.m
 	@mkdir -p $(dir $@)
-	$(OCTAVE_EVAL) "bus2csv($(basename $(notdir $<)), '$@', '$(DELIM)')";
+	$(OCTAVE_EVAL) "mpc = $(basename $(notdir $<)); $(PREPROC) bus2csv(mpc, '$@', '$(DELIM)')";
 
 %/gen.csv: $(DATADIR)/%.m
 	@mkdir -p $(dir $@)
-	$(OCTAVE_EVAL) "gen2csv($(basename $(notdir $<)), '$@', '$(DELIM)')";
+	$(OCTAVE_EVAL) "mpc = $(basename $(notdir $<)); $(PREPROC) gen2csv(mpc, '$@', '$(DELIM)')";
 
 %/branch.csv: $(DATADIR)/%.m
 	@mkdir -p $(dir $@)
-	$(OCTAVE_EVAL) "branch2csv($(basename $(notdir $<)), '$@', '$(DELIM)')";
+	$(OCTAVE_EVAL) "mpc = $(basename $(notdir $<)); $(PREPROC) branch2csv(mpc, '$@', '$(DELIM)')";
 
 %/gencost.csv: $(DATADIR)/%.m
 	@mkdir -p $(dir $@)
-	$(OCTAVE_EVAL) "gencost2csv($(basename $(notdir $<)), '$@', '$(DELIM)')";
+	$(OCTAVE_EVAL) "mpc = $(basename $(notdir $<)); $(PREPROC) gencost2csv(mpc, '$@', '$(DELIM)')";
 
 %/dcline.csv: $(DATADIR)/%.m
 	@mkdir -p $(dir $@)
-	$(OCTAVE_EVAL) "dcline2csv($(basename $(notdir $<)), '$@', '$(DELIM)')";
+	$(OCTAVE_EVAL) "mpc = $(basename $(notdir $<)); $(PREPROC) dcline2csv(mpc, '$@', '$(DELIM)')";
 
 
 casecsv.zip:
