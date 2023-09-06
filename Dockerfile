@@ -35,7 +35,7 @@ RUN make
 # RUN cat case6ww/bus.csv
 
 
-RUN zip -r casecsv.zip ./case*
+RUN zip -r casecsv.zip ./case* ./t_case*
 #RUN find ./ -name "*.csv" -o -name "*.txt" | tar -cf casedata.tar -T -
 RUN ls -alh *.zip
 
